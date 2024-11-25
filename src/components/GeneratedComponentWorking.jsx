@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle, ArrowUpCircle, ArrowDownCircle, Edit2, Save, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import './GeneratedComponent.css'; // Import the CSS file
 
 const COLORS = [
-    'bg-blue',
-    'bg-green',
-    'bg-yellow',
-    'bg-red',
-    'bg-purple',
-    'bg-pink',
-    'bg-indigo',
-    'bg-orange'
+    'bg-blue-100',
+    'bg-green-100',
+    'bg-yellow-100',
+    'bg-red-100',
+    'bg-purple-100',
+    'bg-pink-100',
+    'bg-indigo-100',
+    'bg-orange-100'
 ];
 
 const DEFAULT_WIDGET_CONTENT = {
@@ -106,86 +105,89 @@ const Widget = ({ id, title = 'Widget Title', colSpan, textSize, color, content,
   };
 
   return (
-    <div className={`widget ${color}`} style={{ gridColumn: `span ${colSpan}` }}>
-      <div className="widget-header">
-        {isEditing ? (
-          <input
-            type="text"
-            value={editableTitle}
-            onChange={(e) => setEditableTitle(e.target.value)}
-            className="widget-title-input"
-          />
-        ) : (
-          <h2 className="widget-title">{title}</h2>
-        )}
-        <button
-          onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-          className="widget-edit-button"
-        >
-          {isEditing ? <Save className="icon" /> : <Edit2 className="icon" />}
-        </button>
-        {isEditing && (
+    <div className={`p-4 rounded-lg shadow-md ${color} relative`} 
+         style={{ gridColumn: `span ${colSpan}` }}>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          {isEditing ? (
+            <input
+              type="text"
+              value={editableTitle}
+              onChange={(e) => setEditableTitle(e.target.value)}
+              className="text-lg font-semibold mb-2 border rounded px-2 py-1 w-full"
+            />
+          ) : (
+            <h2 className="text-lg font-semibold mb-2">{title}</h2>
+          )}
           <button
-            onClick={() => setIsEditing(false)}
-            className="widget-cancel-button"
+            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+            className="ml-2 p-1 hover:bg-gray-200 rounded"
           >
-            <X className="icon" />
+            {isEditing ? <Save className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
           </button>
-        )}
-      </div>
+          {isEditing && (
+            <button
+              onClick={() => setIsEditing(false)}
+              className="ml-2 p-1 hover:bg-gray-200 rounded"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
 
-      <div className="widget-controls">
-        <select 
-          value={textSize}
-          onChange={(e) => onChangeSize(id, e.target.value)}
-          className="widget-select"
-        >
-          <option value="xs">Extra Small</option>
-          <option value="sm">Small</option>
-          <option value="md">Medium</option>
-          <option value="lg">Large</option>
-          <option value="xl">Extra Large</option>
-        </select>
-        <select
-          value={colSpan}
-          onChange={(e) => onChangeSpan(id, parseInt(e.target.value))}
-          className="widget-select"
-        >
-          <option value="1">1 Column</option>
-          <option value="2">2 Columns</option>
-          <option value="3">3 Columns</option>
-        </select>
+        <div className="flex justify-between items-center">
+          <select 
+            value={textSize}
+            onChange={(e) => onChangeSize(id, e.target.value)}
+            className="text-sm border rounded p-1"
+          >
+            <option value="xs">Extra Small</option>
+            <option value="sm">Small</option>
+            <option value="md">Medium</option>
+            <option value="lg">Large</option>
+            <option value="xl">Extra Large</option>
+          </select>
+          <select
+            value={colSpan}
+            onChange={(e) => onChangeSpan(id, parseInt(e.target.value))}
+            className="text-sm border rounded p-1 ml-2"
+          >
+            <option value="1">1 Column</option>
+            <option value="2">2 Columns</option>
+            <option value="3">3 Columns</option>
+          </select>
+        </div>
+        
+        <div className="flex justify-between gap-2">
+          <button 
+            onClick={() => onAddWidget(id, 'left')}
+            className="flex items-center gap-1 px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm"
+            title="Add widget to left"
+          >
+            <ArrowLeftCircle className="w-4 h-4" />
+            Add Left
+          </button>
+          <button 
+            onClick={() => onAddWidget(id, 'right')}
+            className="flex items-center gap-1 px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm"
+            title="Add widget to right"
+          >
+            Add Right
+            <ArrowRightCircle className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       
-      <div className="widget-buttons">
-        <button 
-          onClick={() => onAddWidget(id, 'left')}
-          className="widget-button"
-          title="Add widget to left"
-        >
-          <ArrowLeftCircle className="icon" />
-          Add Left
-        </button>
-        <button 
-          onClick={() => onAddWidget(id, 'right')}
-          className="widget-button"
-          title="Add widget to right"
-        >
-          Add Right
-          <ArrowRightCircle className="icon" />
-        </button>
-      </div>
-      
-      <div className="widget-content">
+      <div className="mt-4">
         {isEditing ? (
           <textarea
             value={editableContent}
             onChange={(e) => setEditableContent(e.target.value)}
-            className="widget-textarea"
+            className="w-full h-64 p-2 border rounded font-mono text-sm"
             placeholder="Enter Markdown content..."
           />
         ) : (
-          <div className="markdown-content">
+          <div className="prose prose-sm max-w-none">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
             >
@@ -199,26 +201,26 @@ const Widget = ({ id, title = 'Widget Title', colSpan, textSize, color, content,
 };
 
 const Row = ({ rowId, widgets, onChangeSize, onAddWidget, onChangeSpan, onAddRow, onUpdateWidget }) => (
-  <div className="row">
-    <div className="row-controls">
+  <div className="relative mb-4">
+    <div className="absolute -left-16 top-1/2 -translate-y-1/2 flex flex-col gap-2">
       <button 
         onClick={() => onAddRow(rowId, 'above')}
-        className="row-button"
+        className="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded text-xs whitespace-nowrap"
         title="Add row above"
       >
-        <ArrowUpCircle className="icon" />
+        <ArrowUpCircle className="w-4 h-4" />
         New Row
       </button>
       <button 
         onClick={() => onAddRow(rowId, 'below')}
-        className="row-button"
+        className="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded text-xs whitespace-nowrap"
         title="New Row"
       >
-        <ArrowDownCircle className="icon" />
+        <ArrowDownCircle className="w-4 h-4" />
         New Row
       </button>
     </div>
-    <div className="row-widgets">
+    <div className="grid grid-cols-3 gap-4">
       {widgets.map((widget) => (
         <Widget
           key={widget.id}
@@ -334,8 +336,8 @@ const HubPage = () => {
   };
 
   return (
-    <div className="hub-page">
-      <div className="hub-content">
+    <div className="p-4">
+      <div className="max-w-7xl mx-auto pl-16">
         {rows.map((row) => (
           <Row
             key={row.id}
